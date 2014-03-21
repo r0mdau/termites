@@ -37,12 +37,7 @@ Termite.prototype.removeFromArray = function (array, indice) {
 
 Termite.prototype.changeDirectionToBigWoodHeap = function(){
 	var woodcount = 0;
-	var big = {};
-	for(var i = 0; i < this.woodHeapPos.length; i++){
-		if (this.woodHeapPos[i].woodcount < 0) {
-			this.woodHeapPos = this.removeFromArray(this.woodHeapPos, i);
-		}
-	}
+	var big = {};	
 	for(var i = 0; i < this.woodHeapPos.length; i++){
 		if (woodcount < this.woodHeapPos[i].woodcount) {			
 			woodcount = this.woodHeapPos[i].woodcount;
@@ -55,11 +50,6 @@ Termite.prototype.changeDirectionToBigWoodHeap = function(){
 Termite.prototype.changeDirectionToLittleWoodHeap = function(){
 	var woodcount = 1000000;
 	var little = {};
-	for(var i = 0; i < this.woodHeapPos.length; i++){
-		if (this.woodHeapPos[i].woodcount < 0) {
-			this.woodHeapPos = this.removeFromArray(this.woodHeapPos, i);
-		}
-	}
 	for(var i = 0; i < this.woodHeapPos.length; i++){
 		if (woodcount > this.woodHeapPos[i].woodcount) {
 			little = this.woodHeapPos[i];
@@ -74,8 +64,13 @@ Termite.prototype.update = function(dt) {
 	this.direction.normalize(distance);
 	this.x +=this.direction.x;
 	this.y +=this.direction.y;
-	this.delay -= dt;
+	this.delay -= dt;	
 	if (this.delay <= 0) {
+		for(var i = 0; i < this.woodHeapPos.length; i++){
+			if (this.woodHeapPos[i].woodcount < 0) {
+				this.woodHeapPos = this.removeFromArray(this.woodHeapPos, i);
+			}
+		}
 		if (this.woodHeapPos.length > 1) {
 			if (this.boutDeBois) {
 				this.changeDirectionToBigWoodHeap();

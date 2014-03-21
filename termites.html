@@ -1,0 +1,62 @@
+<html>
+<header>
+	<script type="text/javascript" src="./vector.js"></script>
+	<script type="text/javascript" src="./world.js"></script>
+	<script type="text/javascript" src="./agent.js"></script>
+	<script type="text/javascript" src="./termite.js"></script>
+	<script type="text/javascript" src="./wood_heap.js"></script>
+	<script language="javascript">
+	var world = null;
+	var canvasElement = null;
+	var canvasContext = null;
+
+	var mainLoop = null;
+	var lastUpdate = Date.now();
+	var dt = 0;
+
+	function updateTime() {
+		var now = Date.now();
+    	dt = now - lastUpdate;
+    	lastUpdate = now;		
+	}
+
+	function update() {
+		updateTime();
+		world.update(dt);
+		canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
+		world.draw(canvasContext);
+	}
+
+	function init() {
+		
+		canvasElement = document.getElementById("canvas");
+		canvasContext = this.canvasElement.getContext("2d");
+
+		world = new World(canvasElement.width, canvasElement.height);
+
+		for(var i = 0; i < 150; i ++) {
+			var termite = new Termite();
+			world.addAgent(termite);
+			termite.moveTo(	canvasElement.width * Math.random(), 
+							canvasElement.height * Math.random());
+		}
+		
+		for(var i = 0; i < 5; i ++) {
+			var wood_heap = new WoodHeap();
+			world.addAgent(wood_heap);
+			wood_heap.moveTo(	canvasElement.width * Math.random(), 
+							canvasElement.height * Math.random());
+		}
+
+		var fps = 60;
+		mainLoop = setInterval(update, 1000 / fps); 
+		//update();
+	}
+	</script>
+</header>
+<body onload="init()">
+	<canvas id="canvas" width="600" height="600" style="background-color:#eee; display:inline-block">
+
+	</canvas>
+</body>
+</html>

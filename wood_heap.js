@@ -4,8 +4,7 @@ WoodHeap.prototype.constructor = WoodHeap;
 function WoodHeap() {
 	Agent.call(this);
 	this.typeId = "wood_heap";
-
-	this.woodCount = Math.random() * 90 + 10;
+	this.woodCount = Math.random() * 50 + 10;
 	this.contactTypes = ["wood_heap"];
 }
 

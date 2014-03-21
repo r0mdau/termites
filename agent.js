@@ -6,7 +6,7 @@ function Agent () {
 	this.perceptionRadius = 0; //rayon dans lequel elle peut percevoir d'autres agents (sorte de collision)
 	this.collideTypes = []; //agents dans lesquels on ne peut pas rentrer (termites rentre pas dans bois)
 	this.contactTypes = []; //mettre la liste des agents dans lesquels on veut une collision
-	
+	this.id = Math.random();
 	this.dropped = null; //ne pas toucher
 	this.dead = false; //enlever un tas de bois quand il n'a plus de ressources
 }

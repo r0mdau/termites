@@ -49,9 +49,9 @@ Termite.prototype.changeDirectionToBigWoodHeap = function(){
 
 Termite.prototype.changeDirectionToLittleWoodHeap = function(){
 	var woodcount = 1000000;
-	var little = {};
+	var little = {x:Math.random() * 2 - 1, y: Math.random() * 2 - 1};
 	for(var i = 0; i < this.woodHeapPos.length; i++){
-		if (woodcount > this.woodHeapPos[i].woodcount) {
+		if (woodcount > this.woodHeapPos[i].woodcount && this.woodHeapPos[i].woodcount > 0) {
 			little = this.woodHeapPos[i];
 			woodcount = this.woodHeapPos[i].woodcount;
 		}

@@ -29,7 +29,7 @@ Termite.prototype.removeFromArray = function (array, indice) {
 	var newarray = [];
 	for(var i = 0; i < array.length; i++){
 		if (i != indice) {
-			newarray[newarray.length] = array[i];
+			newarray.push(array[i]);
 		}
 	}
 	return newarray;
@@ -132,7 +132,7 @@ Termite.prototype.processCollision = function(collidedAgent) {
 							y:collidedAgent.y,
 							woodcount:collidedAgent.woodCount,
 							id:collidedAgent.id};
-				this.woodHeapPos[this.woodHeapPos.length] = obj;
+				this.woodHeapPos.push(obj);
 				this.woodHeapPosDate = Date.now();
 			}else{
 				this.updateWoodCount(collidedAgent.woodCount, collidedAgent.id);

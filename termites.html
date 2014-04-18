@@ -5,6 +5,8 @@
 	<script type="text/javascript" src="./agent.js"></script>
 	<script type="text/javascript" src="./termite.js"></script>
 	<script type="text/javascript" src="./wood_heap.js"></script>
+	<script type="text/javascript" src="./wall.js"></script>
+	<script type="text/javascript" src="./world_solver.js"></script>
 	<script language="javascript">
 	var world = null;
 	var canvasElement = null;
@@ -34,20 +36,34 @@
 
 		world = new World(canvasElement.width, canvasElement.height);
 
-		for(var i = 0; i < 150; i ++) {
+
+		for(var i = 0; i < 5; i ++) {
+			var woodHeap = new WoodHeap();
+			world.addAgent(woodHeap);
+			woodHeap.moveTo(	canvasElement.width * Math.random(), 
+								canvasElement.height * Math.random());
+		}
+
+		for(var i = 0; i < 6; i++) {
+			var wall = new Wall();
+			world.addAgent(wall);
+			wall.moveTo(	canvasElement.width * Math.random(), 
+							canvasElement.height * Math.random());
+		}
+
+		var solver = new WorldSolver(world);
+		solver.solve();
+		
+		//world.draw(canvasContext);
+
+		for(var i = 0; i < 100; i ++) {
 			var termite = new Termite();
 			world.addAgent(termite);
 			termite.moveTo(	canvasElement.width * Math.random(), 
 							canvasElement.height * Math.random());
 		}
 		
-		for(var i = 0; i < 7; i ++) {
-			var wood_heap = new WoodHeap();
-			world.addAgent(wood_heap);
-			wood_heap.moveTo(	canvasElement.width * Math.random(), 
-							canvasElement.height * Math.random());
-		}
-
+		
 		var fps = 60;
 		mainLoop = setInterval(update, 1000 / fps); 
 		//update();

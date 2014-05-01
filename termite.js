@@ -14,6 +14,7 @@ function Termite() {
 
 	this.heapInfos = [];
 	this.wallInfos = [];
+	this.wall = null;
 	this.directionDelay = 0;
 	this.speed = 500;
 	this.updateRandomDirection();
@@ -50,7 +51,12 @@ Termite.prototype.update = function(dt) {
 			}
 		}
 		if(targetHeap) {
-			this.setTarget(targetHeap.x, targetHeap.y);
+			if(this.wall != null){
+				var ve = this.closestWallPoint(this.wall);
+				this.setTarget(ve.x, ve.y);
+				this.wall = null;
+			}else
+				this.setTarget(targetHeap.x, targetHeap.y);
 		} else {
 			this.updateRandomDirection();
 		}
@@ -63,6 +69,26 @@ Termite.prototype.update = function(dt) {
 	this.moveTo(x,y);
 };
 
+Termite.prototype.closestWallPoint = function(id) {
+	var x = y = 10000;
+	var number = 0;
+	for(identifier in this.wallInfos) {
+		if(id == identifier){
+			var wall = this.wallInfos[identifier];
+			for(var i = 0; i < wall.length; i++){
+				if(Math.abs(this.x - wall[i].x) < x ){
+					x = wall[i].x;
+					number = i;
+				}
+				if(Math.abs(this.y - wall[i].y) < y ){
+					y = wall[i].y
+				}
+			}
+		}
+	}
+	return {"x" : x, "y" : y};
+}
+
 Termite.prototype.draw = function(context) {
 	context.fillStyle = this.hasWood ? "#f00" : "#000";
 	context.strokeStyle = "#000";
@@ -73,15 +99,18 @@ Termite.prototype.draw = function(context) {
 };
 
 Termite.prototype.processCollision = function(collidedAgent) {
-	if(collidedAgent == null || collidedAgent.typeId == "wall") {
-		this.directionDelay = 0;
-	} else if(collidedAgent.typeId == "wood_heap") {
-		if(this.hasWood) {
-			collidedAgent.addWood();
-			this.hasWood = false;
-		} else {
-			collidedAgent.takeWood();
-			this.hasWood = true;
+	if(collidedAgent){
+		if(collidedAgent.typeId == "wall") {
+			this.directionDelay = 0;
+			this.wall = collidedAgent.identifier;
+		} else if(collidedAgent.typeId == "wood_heap") {
+			if(this.hasWood) {
+				collidedAgent.addWood();
+				this.hasWood = false;
+			} else {
+				collidedAgent.takeWood();
+				this.hasWood = true;
+			}
 		}
 	}
 };
@@ -112,23 +141,23 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 			}
 		}
 	}else if(perceivedAgent.typeId == "wall") {
-		this.wallInfos[perceivedAgent.identifier] = {
-			"p1"	: {
+		this.wallInfos[perceivedAgent.identifier] = [
+			{
 				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2,
 				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2
 			},
-			"p2"	: {
+			{
 				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2,
 				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2
 			},
-			"p3"	: {
+			{
 				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2,
 				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2
 			},
-			"p4"	: {
+			{
 				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2,
 				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2
 			}
-		};
+		];
 	}
 };

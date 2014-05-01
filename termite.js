@@ -35,7 +35,7 @@ Termite.prototype.update = function(dt) {
 		if(searchTargetHeap) {
 			for(identifier in this.heapInfos) {
 				var heapInfo = this.heapInfos[identifier];
-				if(heapInfo.count > 2) {
+				if(heapInfo.count > 0) {
 					if(this.hasWood) {
 						if(targetHeap == null || heapInfo.count > targetHeap.count) {
 							targetHeap  = heapInfo;
@@ -74,7 +74,6 @@ Termite.prototype.draw = function(context) {
 Termite.prototype.processCollision = function(collidedAgent) {
 	if(collidedAgent == null || collidedAgent.typeId == "wall") {
 		this.directionDelay = 0;
-
 	} else if(collidedAgent.typeId == "wood_heap") {
 		if(this.hasWood) {
 			collidedAgent.addWood();
@@ -83,22 +82,23 @@ Termite.prototype.processCollision = function(collidedAgent) {
 			collidedAgent.takeWood();
 			this.hasWood = true;
 		}
-		//this.changeDirection();		
 	}
 };
 
 Termite.prototype.processPerception = function(perceivedAgent) {
-	if(perceivedAgent.typeId == "wood_heap") {
+	if(perceivedAgent.typeId == "wood_heap") {		
 		this.heapInfos[perceivedAgent.identifier] = {
 			"x":perceivedAgent.x,
 			"y":perceivedAgent.y,
 			"count": perceivedAgent.woodCount,
-			"date" : new Date()
+			"date" : Date.now()
 		};
 	} else if(perceivedAgent.typeId == "termite") {
 		for(identifier in perceivedAgent.heapInfos) {
 			var heapInfo = perceivedAgent.heapInfos[identifier];
 			if(this.heapInfos[identifier] == null) {
+				this.heapInfos[identifier] = heapInfo;
+			}else if(heapInfo.count <= 0) {
 				this.heapInfos[identifier] = heapInfo;
 			} else if(this.heapInfos[identifier].date < heapInfo.date)
 				this.heapInfos[identifier] = heapInfo;				

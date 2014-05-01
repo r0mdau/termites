@@ -1,5 +1,6 @@
 function Agent () {
 	this.typeId = "agent";
+	this.identifier = Math.random() * 1000;
 	this.x = 0;
 	this.y = 0;
 	this.boundingRadius = 0;

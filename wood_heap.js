@@ -8,8 +8,6 @@ function WoodHeap() {
 	this.woodCount = Math.random() * 90 + 10;
 	this.contactTypes = ["wood_heap", "wall"];
 
-	this.identifier = Math.random() * 1000;
-
 	this.updateRadius();
 }
 

@@ -113,10 +113,22 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 		}
 	}else if(perceivedAgent.typeId == "wall") {
 		this.wallInfos[perceivedAgent.identifier] = {
-			"p1"	: perceivedAgent.x + perceivedAgent.y - perceivedAgent.boundingWidth / 2 - perceivedAgent.boundingHeight / 2,
-			"p2"	: perceivedAgent.x + perceivedAgent.y + perceivedAgent.boundingWidth / 2 - perceivedAgent.boundingHeight / 2,
-			"p3"	: perceivedAgent.x + perceivedAgent.y + perceivedAgent.boundingWidth / 2 + perceivedAgent.boundingHeight / 2,
-			"p4"	: perceivedAgent.x + perceivedAgent.y - perceivedAgent.boundingWidth / 2 + perceivedAgent.boundingHeight / 2
+			"p1"	: {
+				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2,
+				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2
+			},
+			"p2"	: {
+				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2,
+				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2
+			},
+			"p3"	: {
+				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2,
+				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2
+			},
+			"p4"	: {
+				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2,
+				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2
+			}
 		};
 	}
 };

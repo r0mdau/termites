@@ -89,21 +89,13 @@ WorldSolver.prototype.solve = function() {
 
 	var maxGenerations = 200;
 	while(bestFitting > 0 && maxGenerations > 0) {
-		console.log(bestFitting);
-		//console.log("Selecting...");
 		var selection = this.selectBest();
-
-		//console.log("Generating...");
 		this.nextGeneration(selection);
-
-		//console.log("Evaluating...");
 		this.evaluate();
 		bestDNA = this.population[0];
 		bestFitting = this.processFitting(bestDNA);
-
 		maxGenerations--;
 	}
-	console.log(bestFitting);
 
 	this.applyDNA(bestDNA);
 };

@@ -10,7 +10,7 @@ function Termite() {
 	this.hasWood = false;
 
 	this.collideTypes = ["wood_heap", "wall"];
-	this.contactTypes = ["wood_heap"];
+	this.contactTypes = ["wood_heap", "wall"];
 
 	this.heapInfos = [];
 	this.wallInfos = [];
@@ -53,7 +53,7 @@ Termite.prototype.update = function(dt) {
 		if(targetHeap) {
 			if(this.wall != null){
 				var ve = this.closestWallPoint(this.wall);
-				this.setTarget(ve.x, ve.y);
+				this.setTarget(ve.x, ve.y);				
 				this.wall = null;
 			}else
 				this.setTarget(targetHeap.x, targetHeap.y);
@@ -71,22 +71,24 @@ Termite.prototype.update = function(dt) {
 
 Termite.prototype.closestWallPoint = function(id) {
 	var x = y = 10000;
-	var number = 0;
 	for(identifier in this.wallInfos) {
 		if(id == identifier){
 			var wall = this.wallInfos[identifier];
 			for(var i = 0; i < wall.length; i++){
-				if(Math.abs(this.x - wall[i].x) < x ){
+				if(Math.abs(this.x - wall[i].x) < x && this.isInWorld(wall[i].x) ){
 					x = wall[i].x;
-					number = i;
 				}
-				if(Math.abs(this.y - wall[i].y) < y ){
+				if(Math.abs(this.y - wall[i].y) < y && this.isInWorld(wall[i].y)){
 					y = wall[i].y
 				}
 			}
 		}
 	}
 	return {"x" : x, "y" : y};
+}
+
+Termite.prototype.isInWorld = function(coord) {
+	return coord < 600 && coord > 0;
 }
 
 Termite.prototype.draw = function(context) {
@@ -100,8 +102,8 @@ Termite.prototype.draw = function(context) {
 
 Termite.prototype.processCollision = function(collidedAgent) {
 	if(collidedAgent){
-		if(collidedAgent.typeId == "wall") {
-			this.directionDelay = 0;
+		if(collidedAgent.typeId == "wall") {			
+			this.directionDelay = 0;			
 			this.wall = collidedAgent.identifier;
 		} else if(collidedAgent.typeId == "wood_heap") {
 			if(this.hasWood) {
@@ -143,20 +145,20 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 	}else if(perceivedAgent.typeId == "wall") {
 		this.wallInfos[perceivedAgent.identifier] = [
 			{
-				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2,
-				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2
+				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2 - this.boundingRadius,
+				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2 - this.boundingRadius
 			},
 			{
-				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2,
-				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2
+				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2 + this.boundingRadius,
+				"y" : perceivedAgent.y - perceivedAgent.boundingHeight / 2 - this.boundingRadius
 			},
 			{
-				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2,
-				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2
+				"x" : perceivedAgent.x + perceivedAgent.boundingWidth / 2 + this.boundingRadius,
+				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2 + this.boundingRadius
 			},
 			{
-				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2,
-				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2
+				"x" : perceivedAgent.x - perceivedAgent.boundingWidth / 2 - this.boundingRadius,
+				"y" : perceivedAgent.y + perceivedAgent.boundingHeight / 2 + this.boundingRadius
 			}
 		];
 	}

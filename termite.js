@@ -13,6 +13,7 @@ function Termite() {
 	this.contactTypes = ["wood_heap"];
 
 	this.heapInfos = [];
+	this.wallInfos = [];
 	this.directionDelay = 0;
 	this.speed = 500;
 	this.updateRandomDirection();
@@ -88,12 +89,12 @@ Termite.prototype.processCollision = function(collidedAgent) {
 Termite.prototype.processPerception = function(perceivedAgent) {
 	if(perceivedAgent.typeId == "wood_heap") {		
 		this.heapInfos[perceivedAgent.identifier] = {
-			"x":perceivedAgent.x,
-			"y":perceivedAgent.y,
-			"count": perceivedAgent.woodCount,
-			"date" : Date.now()
+			"x"		: perceivedAgent.x,
+			"y"		: perceivedAgent.y,
+			"count"	: perceivedAgent.woodCount,
+			"date"	: Date.now()
 		};
-	} else if(perceivedAgent.typeId == "termite") {
+	}else if(perceivedAgent.typeId == "termite") {
 		for(identifier in perceivedAgent.heapInfos) {
 			var heapInfo = perceivedAgent.heapInfos[identifier];
 			if(this.heapInfos[identifier] == null) {
@@ -104,5 +105,18 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 				this.heapInfos[identifier] = heapInfo;				
 			
 		}
+		for(identifier in perceivedAgent.wallInfos) {
+			var wallInfo = perceivedAgent.wallInfos[identifier];
+			if(this.wallInfos[identifier] == null) {
+				this.wallInfos[identifier] = wallInfo;
+			}
+		}
+	}else if(perceivedAgent.typeId == "wall") {
+		this.wallInfos[perceivedAgent.identifier] = {
+			"p1"	: perceivedAgent.x + perceivedAgent.y - perceivedAgent.boundingWidth / 2 - perceivedAgent.boundingHeight / 2,
+			"p2"	: perceivedAgent.x + perceivedAgent.y + perceivedAgent.boundingWidth / 2 - perceivedAgent.boundingHeight / 2,
+			"p3"	: perceivedAgent.x + perceivedAgent.y + perceivedAgent.boundingWidth / 2 + perceivedAgent.boundingHeight / 2,
+			"p4"	: perceivedAgent.x + perceivedAgent.y - perceivedAgent.boundingWidth / 2 + perceivedAgent.boundingHeight / 2
+		};
 	}
 };

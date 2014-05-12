@@ -1,35 +1,34 @@
 function Agent () {
 	this.typeId = "agent";
+	this.identifier = Math.random() * 1000;
 	this.x = 0;
 	this.y = 0;
-	this.boundingRadius = 0; // rayon de collision pour toucher une ressource en px
-	this.perceptionRadius = 0; //rayon dans lequel elle peut percevoir d'autres agents (sorte de collision)
-	this.collideTypes = []; //agents dans lesquels on ne peut pas rentrer (termites rentre pas dans bois)
-	this.contactTypes = []; //mettre la liste des agents dans lesquels on veut une collision
-	this.id = Math.random();
-	this.dropped = null; //ne pas toucher
-	this.dead = false; //enlever un tas de bois quand il n'a plus de ressources
+	this.boundingRadius = 0;
+	this.boundingWidth = 0;
+	this.boundingHeight = 0;
+
+	this.perceptionRadius = 0;
+	this.collideTypes = [];
+	this.contactTypes = [];
+	
+	this.dropped = null;	
+	this.dead = false;
 }
 
 Agent.prototype.update = function(dt) {
-	// fonction envoyée toutes les frames 60 fois par seconde
-	// va appeler l'update de tous les autres agents
-	// on décide de ce qu'on veut faire dans le monde
-	// dt = delta de temps depuis le dernier update, peut permettre de calculer le déplacement
+
 };
 
 Agent.prototype.draw = function(context) {
-	// permet de se dessiner dans le monde
-	// dessiner directement un rond
-	// je chsoisis si je me dessine en rouge ou noir en fonction si je porte un tas de bois
+
 };
 
 Agent.prototype.processCollision = function(collidedAgent) {
-	// appelé si collision avec un agent
+	
 };
 
 Agent.prototype.processPerception = function(perceivedAgent) {
-	// appelé si perception avec un agent
+	
 };
 
 Agent.prototype.collides = function(agent) {
@@ -51,6 +50,9 @@ Agent.prototype.drop = function(agent) {
 };
 
 Agent.prototype.moveTo = function(x, y) {
+	this.previousX = this.x;
+	this.previousY = this.y;
+
 	this.x = x;
 	this.y = y;
 };
@@ -60,7 +62,8 @@ Agent.prototype.moveBy = function(direction, length) {
 		var moveVect = new Vect(direction.x, direction.y);
 		moveVect.normalize(length);
 		//console.log(direction.x, direction.y);
-		this.x += moveVect.x;
-		this.y += moveVect.y;
+		var x = this.x + moveVect.x;
+		var y = this.y + moveVect.y;
+		this.moveTo(x, y);
 	}
 };

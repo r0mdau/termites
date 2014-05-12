@@ -4,8 +4,11 @@ WoodHeap.prototype.constructor = WoodHeap;
 function WoodHeap() {
 	Agent.call(this);
 	this.typeId = "wood_heap";
-	this.woodCount = Math.random() * 50 + 10;
-	this.contactTypes = ["wood_heap"];
+
+	this.woodCount = Math.random() * 90 + 10;
+	this.contactTypes = ["wood_heap", "wall"];
+
+	this.updateRadius();
 }
 
 WoodHeap.prototype.updateRadius = function() {
@@ -42,5 +45,7 @@ WoodHeap.prototype.processCollision = function(collidedAgent) {
 			collidedAgent.takeWood();
 			this.addWood();
 		}
+	} else if(collidedAgent && collidedAgent.typeId == "wall") {
+		this.takeWood();
 	}
 };

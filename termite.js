@@ -104,5 +104,7 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 				this.heapInfos[identifier] = heapInfo;				
 			
 		}
+	}else if(perceivedAgent.typeId == "wall") {
+		console.log('I SEE A WALL');
 	}
 };

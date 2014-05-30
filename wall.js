@@ -17,6 +17,10 @@ function Wall() {
 
 }
 
+Wall.prototype.update = function (){
+	
+}
+
 Wall.prototype.draw = function(context) {
 	context.fillStyle = "rgba(255,255,255,0.5)";
 	context.strokeStyle = "#000";

@@ -11,11 +11,16 @@ function Wall() {
 		this.boundingHeight = 100 + Math.random() * 400;
 		this.boundingWidth = 20;		
 	}
+	
 
 //	this.collideTypes = ["wood_heap"];
 //	this.contactTypes = ["wood_heap"];
 
 }
+
+WoodHeap.prototype.update = function(dt) {
+	
+};
 
 Wall.prototype.draw = function(context) {
 	context.fillStyle = "rgba(255,255,255,0.5)";

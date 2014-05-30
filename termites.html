@@ -7,6 +7,7 @@
 	<script type="text/javascript" src="./wood_heap.js"></script>
 	<script type="text/javascript" src="./wall.js"></script>
 	<script type="text/javascript" src="./world_solver.js"></script>
+	<script type="text/javascript" src="./astar.js"></script>
 	<script language="javascript">
 	var world = null;
 	var canvasElement = null;
@@ -56,7 +57,7 @@
 		
 		//world.draw(canvasContext);
 
-		for(var i = 0; i < 100; i ++) {
+		for(var i = 0; i < 1; i ++) {
 			var termite = new Termite();
 			world.addAgent(termite);
 			termite.moveTo(	canvasElement.width * Math.random(), 
@@ -68,6 +69,15 @@
 		mainLoop = setInterval(update, 1000 / fps); 
 		//update();
 	}
+	var graph = new Graph([
+        [1,1,1,1],
+        [0,1,1,0],
+        [0,0,1,1]
+    ]);
+    var start = graph.nodes[0][0];
+    var end = graph.nodes[1][3];
+    var result = astar.search(graph.nodes, start, end);
+    //console.log(result);
 	</script>
 </header>
 <body onload="init()">

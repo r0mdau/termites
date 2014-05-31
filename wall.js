@@ -18,7 +18,7 @@ function Wall() {
 
 }
 
-WoodHeap.prototype.update = function(dt) {
+Wall.prototype.update = function(dt) {
 	
 };
 

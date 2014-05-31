@@ -36,33 +36,33 @@
 		canvasContext = this.canvasElement.getContext("2d");
 
 		world = new World(canvasElement.width, canvasElement.height);
-
+		console.log(canvasElement.width + ' '+ canvasElement.height);
+		for(var i = 0; i < 6; i++) {
+			var wall = new Wall();
+			world.addAgent(wall);
+			wall.moveTo(	canvasElement.width * Math.random(), 
+							canvasElement.height * Math.random());
+		}
+		
 		var solver = new WorldSolver(world);
 		solver.solve();
 		
 		//world.draw(canvasContext);
-
+		
 			var termite = new Termite();
 			world.addAgent(termite);
 			termite.moveTo(	canvasElement.width * Math.random(), 
 							canvasElement.height * Math.random());
 		
-		canvasElement.addEventListener('click', function (event) {
-			var x = event.clientX - canvasElement.offsetLeft;
-			var y = event.clientY - canvasElement.offsetTop;
-			termite.setTarget(x, y);
-		}, false);
-		
-		
 		var fps = 60;
-		mainLoop = setInterval(update, 1000 / fps); 
-		//update();
+		mainLoop = setInterval(update, 1000 / fps); 		
+		
+		world.keepWallsInWorld();
+		
 		canvasElement.addEventListener('click', function (event) {
 			var x = event.clientX - canvasElement.offsetLeft;
-			var y = event.clientY - canvasElement.offsetTop;
-			//termite.setTarget(x, y);
-			console.log(x + ' '+ y);
-			termite.setRoad(x, y);
+			var y = event.clientY - canvasElement.offsetTop;			
+				termite.setRoad(x, y);
 		}, false);
 	}
 	</script>

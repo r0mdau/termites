@@ -193,3 +193,27 @@ World.prototype.draw = function(context) {
 		agent.draw(context);
 	});
 };
+
+World.prototype.keepWallsInWorld = function () {
+    for (var i = 0; i < this.agents.length; ++i) {
+        var agent = this.agents[i];
+        if (agent.typeId == 'wall') {
+            if (agent.x - agent.boundingWidth * 0.5 < 0) {
+                agent.boundingWidth = agent.boundingWidth * 0.5 - agent.x;
+                agent.x = agent.boundingWidth * 0.5;
+            }
+            if (agent.y - agent.boundingHeight * 0.5 < 0) {
+                agent.boundingHeight = agent.boundingHeight * 0.5 - agent.y;
+                agent.y = agent.boundingHeight * 0.5;
+            }
+            if (agent.x + agent.boundingWidth * 0.5 > this.width) {
+                agent.boundingWidth = agent.boundingWidth * 0.5 - (agent.x - this.width);
+                agent.x = this.width - agent.boundingWidth * 0.5;
+            }
+            if (agent.y + agent.boundingHeight * 0.5 > this.height) {
+                agent.boundingHeight = agent.boundingHeight * 0.5 - (agent.y - this.height);
+                agent.y = this.height - agent.boundingHeight * 0.5;
+            }
+        }
+    }
+};

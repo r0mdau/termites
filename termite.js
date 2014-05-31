@@ -29,8 +29,8 @@ function Termite() {
 Termite.prototype.setRoad = function(x, y){
 	this.road = [];
 	var graph = new Graph(this.astarGrid);
-    var start = graph.nodes[parseInt(this.x / this.gridCaseDim)][parseInt(this.y / this.gridCaseDim)];
-    var end = graph.nodes[parseInt(x / this.gridCaseDim)][parseInt(y / this.gridCaseDim)];
+    var start = graph.nodes[parseInt(parseInt(this.x) / this.gridCaseDim)][parseInt(parseInt(this.y) / this.gridCaseDim)];
+    var end = graph.nodes[parseInt(parseInt(x) / this.gridCaseDim)][parseInt(parseInt(y) / this.gridCaseDim)];
     var result = astar.search(graph.nodes, start, end);
 	for(var i = 0; i < result.length; i++){
 		this.road.push(result[i]);
@@ -39,30 +39,22 @@ Termite.prototype.setRoad = function(x, y){
 
 Termite.prototype.initGrid = function (){
 	this.astarGrid = [];
-	for(var i = 0; i < this.gridDim; i++){
+	for(var i = 0; i < this.gridDim * 2; i++){
 		this.astarGrid[i] = [];
 	}
-	for(var i = 0; i < this.gridDim; i++){
+	for(var i = 0; i < this.gridDim * 2; i++){
 		for(var j = 0; j < this.gridDim; j++){
 			this.astarGrid[i][j] = 1;
 		}
 	}
 };
 
-Termite.prototype.stayInWorld = function (dim){
-	if(dim < 0)
-		dim = 0;
-	else if(dim > this.worldDim - 1)
-		dim = this.worldDim - 1;
-	return parseInt(dim);
-}
-
 Termite.prototype.pushWallInGridDim = function (wall){	
-	for(var i = 0; i < 4; i++){
+	for(var i = 0; i < 4; i++){		
 		if (i == 0) {
-			for (var j = wall[i].x; j < wall[i+1].x; j++){
-				console.log(parseInt(parseInt((wall[i].x + j)) / this.gridCaseDim) + ' ' + parseInt(wall[i].y / this.gridCaseDim));
-				//this.astarGrid[parseInt((wall[i].x + j) / this.gridCaseDim)][parseInt(wall[i].y / this.gridCaseDim)] = 0;
+			for (var j = wall[i].x; j < wall[i+1].x; j++){				
+				//console.log(wall[i].x + j + ' ' + wall[i].y);
+				this.astarGrid[parseInt((wall[i].x + j) / this.gridCaseDim)][parseInt(wall[i].y / this.gridCaseDim)] = 0;
 			}
 		}else if (i == 1) {
 			for (var j = wall[i].y; j < wall[i+1].y; j++){
@@ -73,12 +65,12 @@ Termite.prototype.pushWallInGridDim = function (wall){
 				this.astarGrid[parseInt((wall[i+1].x + j) / this.gridCaseDim)][parseInt(wall[i].y / this.gridCaseDim)] = 0;
 			}
 		}else if (i == 3) {
-			for (var j = this.stayInWorld(wall[0].y); j < this.stayInWorld(wall[i].y); j++){
+			for (var j = wall[0].y; j < wall[i].y; j++){
 				this.astarGrid[parseInt(wall[i].x / this.gridCaseDim)][parseInt((wall[0].y + j) / this.gridCaseDim)] = 0;
 			}
 		}
 	}
-	this.astarGraph = new Graph(this.astarGrid);
+	//this.astarGraph = new Graph(this.astarGrid);
 };
 
 Termite.prototype.updateRandomDirection = function(dt) {
@@ -188,6 +180,8 @@ Termite.prototype.processCollision = function(collidedAgent) {
 				collidedAgent.takeWood();
 				this.hasWood = true;
 			}
+		}else if(collidedAgent.typeId == "wall") {
+			this.processPerceptionWall(collidedAgent);
 		}
 	}
 };
@@ -226,20 +220,20 @@ Termite.prototype.processPerceptionWall = function(agent){
 	if(!this.iKnowThisWall(agent.identifier)){
 		this.wallInfos[agent.identifier] = [
 			{
-				"x" : this.stayInWorld(agent.x - agent.boundingWidth / 2),
-				"y" : this.stayInWorld(agent.y - agent.boundingHeight / 2)
+				"x" : parseInt(agent.x - agent.boundingWidth / 2),
+				"y" : parseInt(agent.y - agent.boundingHeight / 2)
 			},
 			{
-				"x" : this.stayInWorld(agent.x + agent.boundingWidth / 2),
-				"y" : this.stayInWorld(agent.y - agent.boundingHeight / 2)
+				"x" : parseInt(agent.x + agent.boundingWidth / 2),
+				"y" : parseInt(agent.y - agent.boundingHeight / 2)
 			},
 			{
-				"x" : this.stayInWorld(agent.x + agent.boundingWidth / 2),
-				"y" : this.stayInWorld(agent.y + agent.boundingHeight / 2)
+				"x" : parseInt(agent.x + agent.boundingWidth / 2),
+				"y" : parseInt(agent.y + agent.boundingHeight / 2)
 			},
 			{
-				"x" : this.stayInWorld(agent.x - agent.boundingWidth / 2),
-				"y" : this.stayInWorld(agent.y + agent.boundingHeight / 2)
+				"x" : parseInt(agent.x - agent.boundingWidth / 2),
+				"y" : parseInt(agent.y + agent.boundingHeight / 2)
 			}
 		];
 		this.pushWallInGridDim(this.wallInfos[agent.identifier]);

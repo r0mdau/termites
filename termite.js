@@ -16,7 +16,7 @@ function Termite() {
 	this.wallInfos = [];
 	this.wall = null;
 	this.directionDelay = 0;
-	this.speed = 500;
+	this.speed = 200;
 	this.updateRandomDirection();
 }
 
@@ -25,12 +25,13 @@ Termite.prototype.updateRandomDirection = function(dt) {
 	this.direction.normalize(1);
 };
 Termite.prototype.setTarget = function(x, y) {
+	this.target = {x: x, y:y};
 	this.direction = new Vect(x - this.x, y - this.y);
 	this.direction.normalize(1);
 };
 
 Termite.prototype.update = function(dt) {
-	this.directionDelay -= dt;
+	/*this.directionDelay -= dt;
 	if(this.directionDelay <= 0) {
 		var targetHeap = null;
 		var searchTargetHeap = (Math.random() < 0.9)
@@ -62,11 +63,18 @@ Termite.prototype.update = function(dt) {
 		}
 		this.speed = 100 + Math.random() * 200;
 		this.directionDelay = 100 + Math.random() * 900;
-	}
+	}*/
 
+	//console.log(this.x + ' ' + this.y + ' ' + this.direction.x + ' ' + this.direction.y);
 	var x = this.x + this.direction.x * this.speed * dt / 1000;
 	var y = this.y + this.direction.y * this.speed * dt / 1000;
-	this.moveTo(x,y);
+	if(this.target){
+		if((this.direction.x < 0 && this.direction.y > 0 && this.x > this.target.x && this.y < this.target.y) ||
+		(this.direction.x > 0 && this.direction.y < 0 && this.x < this.target.x && this.y > this.target.y) ||
+		(this.direction.x > 0 && this.direction.y > 0 && this.x < this.target.x && this.y < this.target.y) ||
+		(this.direction.x < 0 && this.direction.y < 0 && this.x > this.target.x && this.y > this.target.y))
+			this.moveTo(x,y);
+	}	
 };
 
 Termite.prototype.closestWallPoint = function(id) {

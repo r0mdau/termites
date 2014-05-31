@@ -7,6 +7,7 @@
 	<script type="text/javascript" src="./wood_heap.js"></script>
 	<script type="text/javascript" src="./wall.js"></script>
 	<script type="text/javascript" src="./world_solver.js"></script>
+	<script type="text/javascript" src="./astar.js"></script>
 	<script language="javascript">
 	var world = null;
 	var canvasElement = null;
@@ -36,32 +37,21 @@
 
 		world = new World(canvasElement.width, canvasElement.height);
 
-
-		for(var i = 0; i < 5; i ++) {
-			var woodHeap = new WoodHeap();
-			world.addAgent(woodHeap);
-			woodHeap.moveTo(	canvasElement.width * Math.random(), 
-								canvasElement.height * Math.random());
-		}
-
-		for(var i = 0; i < 6; i++) {
-			var wall = new Wall();
-			world.addAgent(wall);
-			wall.moveTo(	canvasElement.width * Math.random(), 
-							canvasElement.height * Math.random());
-		}
-
 		var solver = new WorldSolver(world);
 		solver.solve();
 		
 		//world.draw(canvasContext);
 
-		for(var i = 0; i < 100; i ++) {
 			var termite = new Termite();
 			world.addAgent(termite);
 			termite.moveTo(	canvasElement.width * Math.random(), 
 							canvasElement.height * Math.random());
-		}
+		
+		canvasElement.addEventListener('click', function (event) {
+			var x = event.clientX - canvasElement.offsetLeft;
+			var y = event.clientY - canvasElement.offsetTop;
+			termite.setTarget(x, y);
+		}, false);
 		
 		
 		var fps = 60;

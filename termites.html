@@ -57,6 +57,13 @@
 		var fps = 60;
 		mainLoop = setInterval(update, 1000 / fps); 
 		//update();
+		canvasElement.addEventListener('click', function (event) {
+			var x = event.clientX - canvasElement.offsetLeft;
+			var y = event.clientY - canvasElement.offsetTop;
+			//termite.setTarget(x, y);
+			console.log(x + ' '+ y);
+			termite.setRoad(x, y);
+		}, false);
 	}
 	</script>
 </header>

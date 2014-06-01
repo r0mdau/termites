@@ -14,7 +14,6 @@ function Termite() {
 
 	this.heapInfos = [];
 	this.wallInfos = [];
-
 	this.wall = null;	
 	this.directionDelay = 0;
 	this.speed = 200;
@@ -24,7 +23,7 @@ function Termite() {
 	this.worldDim = 600;
 	this.gridDim = parseInt(this.worldDim / this.gridCaseDim);
 	this.initGrid();
-	this.astarGraph = null;
+	this.astarGraph = null;	
 }
 
 Termite.prototype.setRoad = function(x, y){
@@ -40,11 +39,11 @@ Termite.prototype.setRoad = function(x, y){
 
 Termite.prototype.initGrid = function (){
 	this.astarGrid = [];
-	for(var i = 0; i < this.gridDim; i++){
+	for(var i = 0; i <= this.gridDim; i++){
 		this.astarGrid[i] = [];
 	}
-	for(var i = 0; i < this.gridDim; i++){
-		for(var j = 0; j < this.gridDim; j++){
+	for(var i = 0; i <= this.gridDim; i++){
+		for(var j = 0; j <= this.gridDim; j++){
 			this.astarGrid[i][j] = 1;
 		}
 	}
@@ -85,12 +84,11 @@ Termite.prototype.setTarget = function(x, y) {
 };
 
 Termite.prototype.update = function(dt) {
-
 	this.directionDelay -= dt;
 	if(this.directionDelay <= 0) {
 		var targetHeap = null;
-		var searchTargetHeap = (Math.random() < 0.9)
-		if(searchTargetHeap) {
+		var searchTargetHeap = (Math.random() < 0.9);
+		if(searchTargetHeap){
 			for(identifier in this.heapInfos) {
 				var heapInfo = this.heapInfos[identifier];
 				if(heapInfo.count > 0) {
@@ -107,7 +105,6 @@ Termite.prototype.update = function(dt) {
 			}
 		}
 		if(targetHeap) {
-			//this.setTarget(targetHeap.x, targetHeap.y);
 			this.setRoad(targetHeap.x, targetHeap.y);
 		} else {			
 			this.updateRandomDirection();
@@ -122,7 +119,7 @@ Termite.prototype.update = function(dt) {
 	
 	var x = this.x + this.direction.x * this.speed * dt / 1000;
 	var y = this.y + this.direction.y * this.speed * dt / 1000;
-	//this.moveTo(x,y);
+	this.moveTo(x,y);
 };
 
 Termite.prototype.iKnowThisWall = function (id){
@@ -144,7 +141,7 @@ Termite.prototype.draw = function(context) {
 
 Termite.prototype.processCollision = function(collidedAgent) {
 	if(collidedAgent){
-		if(collidedAgent.typeId == "wall") {						
+		if(collidedAgent.typeId === "wall") {						
 			this.processPerceptionWall(collidedAgent);
 			this.directionDelay = 0;
 		} else if(collidedAgent.typeId === "wood_heap") {			
@@ -162,14 +159,14 @@ Termite.prototype.processCollision = function(collidedAgent) {
 };
 
 Termite.prototype.processPerception = function(perceivedAgent) {
-	if(perceivedAgent.typeId == "wood_heap") {		
+	if(perceivedAgent.typeId === "wood_heap") {		
 		this.heapInfos[perceivedAgent.identifier] = {
 			"x"		: perceivedAgent.x,
 			"y"		: perceivedAgent.y,
 			"count"	: perceivedAgent.woodCount,
 			"date"	: Date.now()
 		};
-	}else if(perceivedAgent.typeId == "termite") {
+	}else if(perceivedAgent.typeId === "termite") {
 		for(identifier in perceivedAgent.heapInfos) {
 			var heapInfo = perceivedAgent.heapInfos[identifier];
 			if(this.heapInfos[identifier] == null) {
@@ -177,8 +174,7 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 			}else if(heapInfo.count <= 0) {
 				this.heapInfos[identifier] = heapInfo;
 			} else if(this.heapInfos[identifier].date < heapInfo.date)
-				this.heapInfos[identifier] = heapInfo;				
-			
+				this.heapInfos[identifier] = heapInfo;			
 		}
 		for(identifier in perceivedAgent.wallInfos) {
 			var wallInfo = perceivedAgent.wallInfos[identifier];
@@ -187,13 +183,18 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 				this.processPerceptionWall(wallInfo);
 			}
 		}
-	}else if(perceivedAgent.typeId == "wall") {
-		this.processPerceptionWall(perceivedAgent);
+	}else if(perceivedAgent.typeId === "wall") {
+		for(identifier in this.wallInfos) {			
+			if(this.wallInfos[perceivedAgent.identifier] == null) {
+				this.wallInfos[perceivedAgent.identifier] = perceivedAgent;
+				this.processPerceptionWall(perceivedAgent);
+			}
+		}
 	}
 };
 
 Termite.prototype.processPerceptionWall = function(agent){
-	if(!this.iKnowThisWall(agent.identifier)){
+	//if(!this.iKnowThisWall(agent.identifier)){
 		this.wallInfos[agent.identifier] = [
 			{
 				"x" : parseInt(agent.x - agent.boundingWidth / 2) - this.gridCaseDim,
@@ -213,12 +214,10 @@ Termite.prototype.processPerceptionWall = function(agent){
 			}
 		];
 		/*
-		 * debug des murs qui touchent les bords à finir
-		console.log(agent.x + ' ' + agent.y);
-		console.log(this.wallInfos[agent.identifier]);
+		 * debug des murs qui touchent les bords ï¿½ finir
+		 *
 		*/
+		
 		this.pushWallInGridDim(this.wallInfos[agent.identifier]);
-	}
-	//if(this.target)
-		//this.setRoad(this.target.x, this.target.y);
+	//}
 };

@@ -36,7 +36,14 @@
 		canvasContext = this.canvasElement.getContext("2d");
 
 		world = new World(canvasElement.width, canvasElement.height);
-		console.log(canvasElement.width + ' '+ canvasElement.height);
+		
+		for(var i = 0; i < 5; i ++) {
+			var woodHeap = new WoodHeap();
+			world.addAgent(woodHeap);
+			woodHeap.moveTo(	canvasElement.width * Math.random(), 
+								canvasElement.height * Math.random());
+		}
+		
 		for(var i = 0; i < 6; i++) {
 			var wall = new Wall();
 			world.addAgent(wall);
@@ -48,22 +55,17 @@
 		solver.solve();
 		
 		//world.draw(canvasContext);
-		
+		for(var i = 0; i < 10; i++) {
 			var termite = new Termite();
 			world.addAgent(termite);
 			termite.moveTo(	canvasElement.width * Math.random(), 
 							canvasElement.height * Math.random());
+		}
 		
 		var fps = 60;
 		mainLoop = setInterval(update, 1000 / fps); 		
 		
 		world.keepWallsInWorld();
-		
-		canvasElement.addEventListener('click', function (event) {
-			var x = event.clientX - canvasElement.offsetLeft;
-			var y = event.clientY - canvasElement.offsetTop;			
-				termite.setRoad(x, y);
-		}, false);
 	}
 	</script>
 </header>

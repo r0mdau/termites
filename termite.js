@@ -39,10 +39,10 @@ Termite.prototype.setRoad = function(x, y){
 
 Termite.prototype.initGrid = function (){
 	this.astarGrid = [];
-	for(var i = 0; i < this.gridDim * 2; i++){
+	for(var i = 0; i < this.gridDim; i++){
 		this.astarGrid[i] = [];
 	}
-	for(var i = 0; i < this.gridDim * 2; i++){
+	for(var i = 0; i < this.gridDim; i++){
 		for(var j = 0; j < this.gridDim; j++){
 			this.astarGrid[i][j] = 1;
 		}
@@ -52,20 +52,20 @@ Termite.prototype.initGrid = function (){
 Termite.prototype.pushWallInGridDim = function (wall){	
 	for(var i = 0; i < 4; i++){		
 		if (i == 0) {
-			for (var j = wall[i].x; j < wall[i+1].x; j++){				
-				//console.log(wall[i].x + j + ' ' + wall[i].y);
+			for (var j = 0; j < wall[i+1].x - wall[i].x; j++){				
+				//console.log((wall[i].x + j) + ' ' + wall[i].y);
 				this.astarGrid[parseInt((wall[i].x + j) / this.gridCaseDim)][parseInt(wall[i].y / this.gridCaseDim)] = 0;
 			}
 		}else if (i == 1) {
-			for (var j = wall[i].y; j < wall[i+1].y; j++){
+			for (var j = 0; j < wall[i+1].y - wall[i].y; j++){
 				this.astarGrid[parseInt(wall[i].x / this.gridCaseDim)][parseInt((wall[i].y + j) / this.gridCaseDim)] = 0;
 			}
 		}else if (i == 2) {
-			for (var j = wall[i+1].x; j < wall[i].x; j++){
+			for (var j = 0; j < wall[i].x - wall[i+1].x; j++){
 				this.astarGrid[parseInt((wall[i+1].x + j) / this.gridCaseDim)][parseInt(wall[i].y / this.gridCaseDim)] = 0;
 			}
 		}else if (i == 3) {
-			for (var j = wall[0].y; j < wall[i].y; j++){
+			for (var j = 0; j < wall[i].y - wall[0].y; j++){
 				this.astarGrid[parseInt(wall[i].x / this.gridCaseDim)][parseInt((wall[0].y + j) / this.gridCaseDim)] = 0;
 			}
 		}
@@ -220,22 +220,29 @@ Termite.prototype.processPerceptionWall = function(agent){
 	if(!this.iKnowThisWall(agent.identifier)){
 		this.wallInfos[agent.identifier] = [
 			{
-				"x" : parseInt(agent.x - agent.boundingWidth / 2),
-				"y" : parseInt(agent.y - agent.boundingHeight / 2)
+				"x" : parseInt(agent.x - agent.boundingWidth / 2) - this.gridCaseDim,
+				"y" : parseInt(agent.y - agent.boundingHeight / 2) - this.gridCaseDim
 			},
 			{
-				"x" : parseInt(agent.x + agent.boundingWidth / 2),
-				"y" : parseInt(agent.y - agent.boundingHeight / 2)
+				"x" : parseInt(agent.x + agent.boundingWidth / 2) + this.gridCaseDim,
+				"y" : parseInt(agent.y - agent.boundingHeight / 2) - this.gridCaseDim
 			},
 			{
-				"x" : parseInt(agent.x + agent.boundingWidth / 2),
-				"y" : parseInt(agent.y + agent.boundingHeight / 2)
+				"x" : parseInt(agent.x + agent.boundingWidth / 2) + this.gridCaseDim,
+				"y" : parseInt(agent.y + agent.boundingHeight / 2) + this.gridCaseDim
 			},
 			{
-				"x" : parseInt(agent.x - agent.boundingWidth / 2),
-				"y" : parseInt(agent.y + agent.boundingHeight / 2)
+				"x" : parseInt(agent.x - agent.boundingWidth / 2) - this.gridCaseDim,
+				"y" : parseInt(agent.y + agent.boundingHeight / 2) + this.gridCaseDim
 			}
 		];
+		/*
+		 * debug des murs qui touchent les bords à finir
+		console.log(agent.x + ' ' + agent.y);
+		console.log(this.wallInfos[agent.identifier]);
+		*/
 		this.pushWallInGridDim(this.wallInfos[agent.identifier]);
 	}
+	//if(this.target)
+		//this.setRoad(this.target.x, this.target.y);
 };

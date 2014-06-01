@@ -36,38 +36,36 @@
 		canvasContext = this.canvasElement.getContext("2d");
 
 		world = new World(canvasElement.width, canvasElement.height);
-
-
+		
 		for(var i = 0; i < 5; i ++) {
 			var woodHeap = new WoodHeap();
 			world.addAgent(woodHeap);
 			woodHeap.moveTo(	canvasElement.width * Math.random(), 
 								canvasElement.height * Math.random());
 		}
-
+		
 		for(var i = 0; i < 6; i++) {
 			var wall = new Wall();
 			world.addAgent(wall);
 			wall.moveTo(	canvasElement.width * Math.random(), 
 							canvasElement.height * Math.random());
 		}
-
+		
 		var solver = new WorldSolver(world);
 		solver.solve();
 		
 		//world.draw(canvasContext);
-
-		for(var i = 0; i < 1; i ++) {
+		for(var i = 0; i < 10; i++) {
 			var termite = new Termite();
 			world.addAgent(termite);
 			termite.moveTo(	canvasElement.width * Math.random(), 
 							canvasElement.height * Math.random());
 		}
 		
-		
 		var fps = 60;
-		mainLoop = setInterval(update, 1000 / fps); 
-		//update();
+		mainLoop = setInterval(update, 1000 / fps); 		
+		
+		world.keepWallsInWorld();
 	}
 	</script>
 </header>

@@ -83,7 +83,7 @@ Termite.prototype.setTarget = function(x, y) {
 	this.direction.normalize(1);
 };
 
-Termite.prototype.update = function(dt) {
+Termite.prototype.perceive = function(){
 	this.directionDelay -= dt;
 	if(this.directionDelay <= 0) {
 		var targetHeap = null;
@@ -112,6 +112,9 @@ Termite.prototype.update = function(dt) {
 		this.speed = 200 + Math.random() * 200;
 		this.directionDelay = 1000 + Math.random() * 900;
 	}
+}
+
+Termite.prototype.analyse = function(){
 	if(this.road && this.road.length > 0){
 		var nextPoint = this.road.shift();
 		this.setTarget(nextPoint.x * this.gridCaseDim, nextPoint.y * this.gridCaseDim);			
@@ -119,7 +122,17 @@ Termite.prototype.update = function(dt) {
 	
 	var x = this.x + this.direction.x * this.speed * dt / 1000;
 	var y = this.y + this.direction.y * this.speed * dt / 1000;
-	this.moveTo(x,y);
+	return {x:x, y:y};
+}
+
+Termite.prototype.act = function (ccl){
+	this.moveTo(ccl.x, ccl.y);
+}
+
+Termite.prototype.update = function(dt) {
+	this.perceive();
+	var conclusions = this.analyse();
+	this.act(conclusions);
 };
 
 Termite.prototype.iKnowThisWall = function (id){
@@ -213,11 +226,6 @@ Termite.prototype.processPerceptionWall = function(agent){
 				"y" : parseInt(agent.y + agent.boundingHeight / 2) + this.gridCaseDim
 			}
 		];
-		/*
-		 * debug des murs qui touchent les bords � finir
-		 *
-		*/
-		
 		this.pushWallInGridDim(this.wallInfos[agent.identifier]);
 	//}
 };

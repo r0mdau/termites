@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Projet termites</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="../css/bootstrap/bootstrap.css">
+</head>
+<body>
+	<div class="container">		
+		<div class="row">
+			<canvas id="canvas" width="600" height="600" style="background-color:#eee; display:inline-block">
+		
+			</canvas>
+			<a href="../documentation.html">
+				<button class="btn btn-large btn-info" type="button">Retour à la documentation</button>
+			</a>
+		</div>
+	</div>
+	<script src="vector.js"></script>
+	<script src="world.js"></script>
+	<script src="agent.js"></script>
+	<script src="termite.js"></script>
+	<script src="wood_heap.js"></script>
+	<script src="wall.js"></script>
+	<script src="world_solver.js"></script>
+	<script src="astar.js"></script>
+	<script>
+		var world = null;
+	var canvasElement = null;
+	var canvasContext = null;
+
+	var mainLoop = null;
+	var lastUpdate = Date.now();
+	var dt = 0;
+
+	function updateTime() {
+		var now = Date.now();
+    	dt = now - lastUpdate;
+    	lastUpdate = now;		
+	}
+
+	function update() {
+		updateTime();
+		world.update(dt);
+		canvasContext.clearRect(0, 0, canvasElement.width, canvasElement.height);
+		world.draw(canvasContext);
+	}
+
+	function init() {
+
+		canvasElement = document.getElementById("canvas");
+		canvasContext = this.canvasElement.getContext("2d");
+
+		world = new World(canvasElement.width, canvasElement.height);
+		console.log(canvasElement.width + ' '+ canvasElement.height);
+		for(var i = 0; i < 6; i++) {
+			var wall = new Wall();
+			world.addAgent(wall);
+			wall.moveTo(	canvasElement.width * Math.random(), 
+							canvasElement.height * Math.random());
+		}
+
+		var solver = new WorldSolver(world);
+		solver.solve();
+
+		//world.draw(canvasContext);
+
+			var termite = new Termite();
+			world.addAgent(termite);
+			termite.moveTo(	canvasElement.width * Math.random(), 
+							canvasElement.height * Math.random());
+
+		var fps = 60;
+		mainLoop = setInterval(update, 1000 / fps); 		
+
+		world.keepWallsInWorld();
+
+		canvasElement.addEventListener('click', function (event) {
+			var x = event.clientX - canvasElement.offsetLeft;
+			var y = event.clientY - canvasElement.offsetTop;			
+				termite.setRoad(x, y);
+		}, false);
+	}
+		window.onload = function(){
+			init();
+		}
+	</script>
+</body>
+</html>

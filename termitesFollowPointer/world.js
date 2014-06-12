@@ -71,27 +71,20 @@ World.prototype.processCollisions = function() {
 };
 
 World.prototype.processPerception = function(agent1, agent2) {
-
-	if(this.agentsColliding(agent1, agent2, true)) {
-		agent1.processPerception(agent1);		
+	var deltaVect = new Vect(agent1.x - agent2.x, agent1.y - agent2.y);
+	if(deltaVect.length() < (agent1.perceptionRadius + agent2.boundingRadius)) {
+		agent1.processPerception(agent2);
 	}
-	if(this.agentsColliding(agent2, agent1, true)) {
-		agent2.processPerception(agent1);		
+	if(deltaVect.length() < (agent2.perceptionRadius + agent1.boundingRadius)) {
+		agent2.processPerception(agent1);
 	}
-
 }
 
-World.prototype.agentsColliding = function(agent1, agent2, perception) {
-
-	var agent1Radius = agent1.boundingRadius;
-	if(perception == true) {
-		agent1Radius = agent1.perceptionRadius;
-	}
-
-	if(agent1Radius > 0 && agent2.boundingRadius > 0) {
-		return this.processCircleCircleCollision(agent1, agent2, perception);
-	} else if(agent1Radius > 0 && agent2.boundingWidth > 0) {
-		return this.processCircleRectangleCollision(agent1, agent2, perception);
+World.prototype.agentsColliding = function(agent1, agent2) {
+	if(agent1.boundingRadius > 0 && agent2.boundingRadius > 0) {
+		return this.processCircleCircleCollision(agent1, agent2);
+	} else if(agent1.boundingRadius > 0 && agent2.boundingWidth > 0) {
+		return this.processCircleRectangleCollision(agent1, agent2);
 	} else if(agent2.boundingRadius > 0 && agent1.boundingWidth > 0) {
 		return this.processCircleRectangleCollision(agent2, agent1);
 	} else if(agent2.boundingWidth > 0 && agent1.boundingWidth > 0) {
@@ -100,39 +93,26 @@ World.prototype.agentsColliding = function(agent1, agent2, perception) {
 	return false;
 };
 
-World.prototype.processCircleCircleCollision = function(agent1, agent2, usePerception) {
-
-	var agent1Radius = agent1.boundingRadius;
-	if(usePerception == true) {
-		agent1Radius = agent1.perceptionRadius;
-	}
-
+World.prototype.processCircleCircleCollision = function(agent1, agent2) {
 	var deltaVect = new Vect(agent1.x - agent2.x, agent1.y - agent2.y);
-	if(deltaVect.length() < (agent1Radius + agent2.boundingRadius)) {
-		if(!(usePerception == true)) {
-			if(agent1.collides(agent2) || agent2.collides(agent1)) {
-				var movedAgent = agent1.collides(agent2) ? agent1 : agent2;
-				var movingAgent = movedAgent == agent1 ? agent2 : agent1;
-				var moveVect = new Vect(movedAgent.x - movingAgent.x,movedAgent.y - movingAgent.y);
-				var moveDistance = (agent1Radius + agent2.boundingRadius) - deltaVect.length();
-				movedAgent.moveBy(moveVect, moveDistance);
-			}
+	if(deltaVect.length() < (agent1.boundingRadius + agent2.boundingRadius)) {
+		if(agent1.collides(agent2) || agent2.collides(agent1)) {
+			var movedAgent = agent1.collides(agent2) ? agent1 : agent2;
+			var movingAgent = movedAgent == agent1 ? agent2 : agent1;
+			var moveVect = new Vect(movedAgent.x - movingAgent.x,movedAgent.y - movingAgent.y);
+			var moveDistance = (agent1.boundingRadius + agent2.boundingRadius) - deltaVect.length();
+			movedAgent.moveBy(moveVect, moveDistance);
 		}
+
 		return true;
 	}
 	return false;
 };
 
-World.prototype.processCircleRectangleCollision = function(agent1, agent2, usePerception) {
-
-	var agent1Radius = agent1.boundingRadius;
-	if(usePerception == true) {
-		agent1Radius = agent1.perceptionRadius;
-	}
-
+World.prototype.processCircleRectangleCollision = function(agent1, agent2) {
 	var circleX = agent1.x;
 	var circleY = agent1.y;
-	var circleRadius = agent1Radius;
+	var circleRadius = agent1.boundingRadius;
 
 	var rectMinX = agent2.x - agent2.boundingWidth/2;
 	var rectMaxX = agent2.x + agent2.boundingWidth/2;
@@ -145,14 +125,13 @@ World.prototype.processCircleRectangleCollision = function(agent1, agent2, usePe
 	var deltaVect = new Vect(circleX - closestX, circleY - closestY);
 
 	if (deltaVect.length() <= circleRadius) {
-		if(!(usePerception == true)) {
-			if(agent1.collides(agent2)) {
-				agent1.x = agent1.previousX;
-				agent1.y = agent1.previousY;
-			} else if(agent2.collides(agent1)) {
+		if(agent1.collides(agent2)) {
+			agent1.x = agent1.previousX;
+			agent1.y = agent1.previousY;
+		} else if(agent2.collides(agent1)) {
 
-			}
 		}
+
 		return true;
 	}
 	return false;

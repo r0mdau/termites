@@ -70,7 +70,6 @@ Termite.prototype.pushWallInGridDim = function (wall){
 			}
 		}
 	}
-	//this.astarGraph = new Graph(this.astarGrid);
 };
 
 Termite.prototype.updateRandomDirection = function(dt) {

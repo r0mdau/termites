@@ -11,28 +11,58 @@
 			<div class="span12">
 				<div class="row-fluid">			
 					<pre>
-Félix Wattez
-Romain Dauby
+Félix Wattez : felix.wattez@epsi.fr
+Romain Dauby : romain.dauby@epsi.fr
 
 <h1>TP Termites</h1>
 
 <h2>Notre projet</h2>
-<p>Il suffit de lancer la page <a href="index.html">index.html</a> pour observer le fonctionnement de nos termites avec l'algorithme A*.
-Au niveau du code, nous utilisons une grille à 2 dimensions. 2 dimensions pour représenter l’axe et x et l’axe des y de la grille. La taille de cette grille est le résultat de la division de la taille du canvas par le diamètre d'une termite.
-</p>
-<h3>Arborescence des dossiers de ce projet</h3>
-1) Les fichiers à la racine contiennent la version des termites utilisant l'algorithme A* de façon autonome. Elles procèdent en 3 phases :
+Il suffit de lancer la page <a href="index.html">index.html</a> pour observer le fonctionnement de nos termites avec l'algorithme A*.
+Au niveau du code, pour l'algorithme A*, nous utilisons une grille à 2 dimensions. 2 dimensions pour représenter l’axe et x et l’axe des y de la grille. La taille de cette grille est le résultat de la division de la taille du canvas par le diamètre d'une termite.
+
+<h3>Arborescence des fichiers à la racine de ce projet</h3>
+Les fichiers à la racine contiennent la version des termites utilisant l'algorithme A* de façon autonome. Elles procèdent en 3 phases :
 	- perception
 	- analyse
 	- action
 Ces 3 phases sont visibles dans la méthode update.
 
-2) Le dossier termitesFollowPointer contient un canvas avec une termite et des murs. La termite se rend à l'endroit du click du pointeur de la souris dans le canvas tout en évitant les murs en utilisant l'algorithme A*.
+<b>Fonctionnement d'une termite :</b>
+Par défaut une termite va chercher du bois dans le plus petit tas de bois qu'elle connaît vers le plus gros qu'elle connaît également.
+Et si elle connaît une route qui mène au bout de bois visé alors elle l'a prend.
+
+<b>Explications méthodes de la classe termite :</b>
+<u>setRoad</u> : prend des coordonnées en paramètre. On va définir une route à suivre pour la termite en partant de sa position actuelle vers celle les coordonnées passées en paramètres.
+Cette route sera définie en utilisant l'algorithme A* qui prend en compte les murs.
+<u>initGrid</u> : initialise la grille de dimensions x : canvasWidth / diamètre termite et y : canvasHeight / diamètre termite.
+Cette méthode alimente (intialise) l'attribut this.astarGrid qui contiendra la position de chaque mur.
+<u>pushWallInGridDim</u> : prend un mur en paramètre avec les coordonnées de ces 4 coins et alimente l'attribut this.astarGrid précédemment cité.
+<u>updateRandomDirection</u> : lorsque la termite n'a pas de but précis, on lui donne une direction aléatoire.
+<u>setTarget</u> : prend des coordonnées en paramètre qui définissent la cible (tas de bois) de la termite.
+<u>perceive</u> : la termite perçois les tas de bois qu'elle connaît et va définir vers lequel elle doit se rendre pour mener à bien sa mission.
+<u>analyse</u> : la termite analyse si elle doit emprunter une route spécifique pour atteindre sont objectif, sinon elle va directement sur son objectif.
+<u>act</u> : la termite acte la décision qu'elle a précédemment analysé.
+<u>update</u> : méthode appelé toutes les x fois (60 fois par seconde).
+<u>iKnowThisWall</u> : prend un mur en paramètre et définit si la termite le connaît déjà ou non.
+<u>draw</u> : dessine la termite sur le canvas.
+<u>processCollision</u> : méthode appelée lorsque la termite entre en collision avec un élément présent dans this.contactTypes.
+<u>processPerception</u> : méthode appelée lorsque la termite perçoit un élément présent dans this.collideTypes.
+<u>processPerceptionWall</u> : méthode appelée lorsque la termite entre en contact ou perçoit un mur. Cela permet de récupérer la position des 4 coins su mur.
+Ensuite on appelle la méthode pushWallInGridDim pour que la grille "A*" de la termite soit mise à jour.
+
+<h3>Dossier termitesFollowPointer</h3>
+Ce dossier contient un canvas avec <b>une</b> termite et des murs. La termite se rend à l'endroit du click du pointeur de la souris dans le canvas tout en évitant les murs en utilisant l'algorithme A*.
+Pour que la termite percoive le mur, il faut qu'elle s'approche une première fois de son centre ou bien qu'elle le touche. Une fois qu'elle l'a perçu, il faut re-cliquer derrière le mur afin qu'elle l'évite.
 <a href="termitesFollowPointer/index.html"><button class="btn btn-success" type="button">Voir la termite qui suit le clic du pointeur</button></a>
 
 <h2>Améliorations possibles</h2>
-TODO...
-                    </pre>
+1) Il n'y a que les murs qui sont insérés comme éléments à éviter dans la grille A* d'une termite. Il faudrait ajouter les bouts de bois afin qu'elle évite ceux qu'elle doit ignorer.
+Ceci car la termite se dirige toujours du plus petit vers le plus gros bout de bois (parmis les bouts de bois qu'elle connaît).
+2) Optimiser l'algorithme pour les performances. Ici on instancie une grille par termite. Dans la réalité ça se passe comme ça.
+Mais dans ce projet si on lance 200 termites, le rendu va avoir des latences. Donc on pourrait utiliser un seul objet grille
+partagé par toutes les termites. Il suffirait d'ajouter un attribut supplémentaire à chaque mur présent dans cet objet grille afin
+de préciser si la termite en question l'a déjà perçu ou non.
+					</pre>
 					<a href="index.html">
 						<button class="btn btn-large btn-info" type="button">Retour aux termites A*</button>
 					</a>

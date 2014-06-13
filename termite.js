@@ -206,7 +206,6 @@ Termite.prototype.processPerception = function(perceivedAgent) {
 };
 
 Termite.prototype.processPerceptionWall = function(agent){
-	//if(!this.iKnowThisWall(agent.identifier)){
 		this.wallInfos[agent.identifier] = [
 			{
 				"x" : parseInt(agent.x - agent.boundingWidth / 2) - this.gridCaseDim,
@@ -226,5 +225,4 @@ Termite.prototype.processPerceptionWall = function(agent){
 			}
 		];
 		this.pushWallInGridDim(this.wallInfos[agent.identifier]);
-	//}
 };

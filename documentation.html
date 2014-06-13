@@ -53,11 +53,13 @@ Ensuite on appelle la méthode pushWallInGridDim pour que la grille "A*" de la t
 <h3>Dossier termitesFollowPointer</h3>
 Ce dossier contient un canvas avec <b>une</b> termite et des murs. La termite se rend à l'endroit du click du pointeur de la souris dans le canvas tout en évitant les murs en utilisant l'algorithme A*.
 Pour que la termite percoive le mur, il faut qu'elle s'approche une première fois de son centre ou bien qu'elle le touche. Une fois qu'elle l'a perçu, il faut re-cliquer derrière le mur afin qu'elle l'évite.
+Ceci dans le but de prouver que l'implémentation de l'algorithme A* pour une termite fonctionne.
 <a href="termitesFollowPointer/index.html"><button class="btn btn-success" type="button">Voir la termite qui suit le clic du pointeur</button></a>
 
 <h2>Améliorations possibles</h2>
 1) Il n'y a que les murs qui sont insérés comme éléments à éviter dans la grille A* d'une termite. Il faudrait ajouter les bouts de bois afin qu'elle évite ceux qu'elle doit ignorer.
 Ceci car la termite se dirige toujours du plus petit vers le plus gros bout de bois (parmis les bouts de bois qu'elle connaît).
+Actuellement si elle doit aller vers un petit tas de bois placé derrière un gros tas, elle va entrer en collision avec le gros.
 2) Optimiser l'algorithme pour les performances. Ici on instancie une grille par termite. Dans la réalité ça se passe comme ça.
 Mais dans ce projet si on lance 200 termites, le rendu va avoir des latences. Donc on pourrait utiliser un seul objet grille
 partagé par toutes les termites. Il suffirait d'ajouter un attribut supplémentaire à chaque mur présent dans cet objet grille afin
